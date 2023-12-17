@@ -20,16 +20,16 @@ export class HomeComponent implements OnInit{
     let input: HTMLInputElement | null  = <HTMLInputElement | null >document.getElementById("input");
 
     input?.addEventListener("change", (ev:any) =>{
-    this.plantillas = new Array<Plantilla>;  
-    if (input?.files) {
-      for (let i = 0; i < input.files.length; i++) {
-        const url= input.files[i].webkitRelativePath
-        
-//        console.log(url);
-        this.plantillas.push(new Plantilla(i + 1, input.files[i].name, url));
+      this.plantillas = new Array<Plantilla>;  
+      if (input?.files) {
+        for (let i = 0; i < input.files.length; i++) {
+          if(input.files[0].name.substring(input.files[0].name.length-4)==".odt" || input.files[0].name.substring(input.files[0].name.length-4)=="docx"){
+            const url= input.files[i].webkitRelativePath
+            //        console.log(url);
+            this.plantillas.push(new Plantilla(i + 1, input.files[i].name, url));
+          }
+        }
       }
-    }
-    
 //    console.log("Plantillas: "+this.plantillas.toString());
 //    APlantillas = this.plantillas;
     });
