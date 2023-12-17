@@ -1,52 +1,53 @@
 import { Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { PlantillaComponent } from '../modelos/plantilla/plantilla.component';
 
-let plantillas: any;
-const div = document.createElement("p");
-div.textContent = "No hay archivos!!!!";
-document.body.appendChild(div);
+//let APlantillas: Array<Plantilla> = []
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [RouterLink, PlantillaComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
+
+
 export class HomeComponent implements OnInit{
-ngOnInit(): void {
-  plantillas = document.getElementById("plantillas");
+  public plantillas:any;
+  ngOnInit(): void {
+    /* let input:any = document.getElementById("input"); */
+    let input: HTMLInputElement | null  = <HTMLInputElement | null >document.getElementById("input");
 
-  plantillas?.addEventListener("change", (ev:any) =>{
-    if(plantillas!==null) {
-      div.textContent = "Hay archivos!!!"
-      document.body.appendChild(div);
-      if (plantillas.hasAttribute('file')) {
-        // El elemento tiene el atributo file
-        console.log("si");
-      } else {
-        // El elemento no tiene el atributo file
-        console.log(plantillas);
-        let ul = document.createElement("ul");
-        document.body.appendChild(ul);
-        for(let i=0; i<plantillas.files.length; i++) {
-          console.log(plantillas.files[i]);
-          let pl = document.createElement("li");
-          let a = document.createElement("a");
-          a.href = "/"+i;
-          a.textContent = i+1+": "+plantillas.files[i].name;
-          pl.appendChild(a);
-          document.body.appendChild(pl);
-          let plan = document.createElement("span");
-          document.body.appendChild(plan);
-          
-        } 
+    input?.addEventListener("change", (ev:any) =>{
+    this.plantillas = new Array<Plantilla>;  
+    if (input?.files) {
+      for (let i = 0; i < input.files.length; i++) {
+        const url= input.files[i].webkitRelativePath
+        
+//        console.log(url);
+        this.plantillas.push(new Plantilla(i + 1, input.files[i].name, url));
       }
-      
-    
     }
-  });
+    
+//    console.log("Plantillas: "+this.plantillas.toString());
+//    APlantillas = this.plantillas;
+    });
+  }
 }
-plantillas: any;
 
+export class Plantilla {
+  id: Number;
+  nombre: String;
+  address: String;
 
+  constructor(_id:Number, _nombre:String, _address:String) {
+    this.id = _id;
+    this.nombre = _nombre;
+    this.address = _address;
+  }
+
+  toString() {
+    return this.id+": "+this.nombre;
+  }
 }
