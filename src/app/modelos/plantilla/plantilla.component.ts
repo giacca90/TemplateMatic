@@ -1,6 +1,5 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HomeComponent, Plantilla } from '../../home/home.component'
 
 @Component({
   selector: 'app-plantilla',
@@ -12,8 +11,8 @@ import { HomeComponent, Plantilla } from '../../home/home.component'
 
 export class PlantillaComponent implements OnInit{
   route: ActivatedRoute = inject(ActivatedRoute);
-  nombre: String;
-  ruta: String;
+  nombre: string;
+  ruta: string;
   
   constructor() {
     this.nombre = this.route.snapshot.queryParams['nombre'];
@@ -30,11 +29,11 @@ export class PlantillaComponent implements OnInit{
    
   }
 
-  EditOdt(ruta:String) {
+  EditOdt(ruta:string) {
     console.log("Desde EditOdt");
   }
 
-  EditDocx(ruta:String) {
+  EditDocx(ruta:string) {
     console.log("Desde EditDocx");
   }
 }
