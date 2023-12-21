@@ -25,7 +25,7 @@
 
     @for(plantilla of plantillas; track plantilla.id){
         <li>
-            <a routerLink="/plantilla/{{plantilla.id}}" [queryParams]="plantilla">{{ plantilla.id }}: {{ plantilla.nombre }}</a>
+            <a routerLink="/plantilla/{{plantilla.id}}" [queryParams]="plantilla">{{ plantilla.id }}: {{plantilla.nombre}}</a>
         </li>   
     }
   </ul>
