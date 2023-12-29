@@ -1,32 +1,29 @@
 import { Injectable } from '@angular/core';
-import { from } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PlantillaService {
-private plantillas:Array<Plantilla>;
-  constructor() { }
+  private plantillas: Array<Plantilla>;
+  constructor() {}
 
-  setTemp(_plantillas:Array<Plantilla>) {
+  setTemp(_plantillas: Array<Plantilla>) {
     this.plantillas = _plantillas;
   }
-  
+
   getTemp() {
     return this.plantillas;
   }
 
-  getPlantillaForId(id:number):File {
-    for(let i=0; i<this.plantillas.length; i++) {
-      if(this.plantillas[i].id == id) {
-        return this.plantillas[id].file
+  getPlantillaForId(id: number): File {
+    for (let i = 0; i < this.plantillas.length; i++) {
+      if (this.plantillas[i].id == id) {
+        return this.plantillas[i].file;
       }
     }
     return null;
   }
-} 
-
-
+}
 
 export class Plantilla {
   id: number;
@@ -34,7 +31,7 @@ export class Plantilla {
   nombre: string;
   address: string;
 
-  constructor(_id:number, _file:File) {
+  constructor(_id: number, _file: File) {
     this.id = _id;
     this.file = _file;
     this.nombre = _file.name;
@@ -42,7 +39,6 @@ export class Plantilla {
   }
 
   toString() {
-    return this.id+": "+this.nombre;
+    return this.id + ': ' + this.nombre;
   }
 }
-
