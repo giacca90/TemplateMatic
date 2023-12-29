@@ -123,6 +123,28 @@ export class PlantillaComponent implements OnInit {
 
   async EditDocx(file: File) {
     console.log('Desde EditDocx');
+  //prueba con XML
+  const reader = new FileReader();
+
+  reader.onload = async (e: ProgressEvent<FileReader>) => {
+    // Descomprime el archivo .odt
+    const zip = await JSZip().loadAsync(this.file);
+    // Accede al contenido del archivo document.xml
+    const documentXml = await zip.file('word/document.xml').async('text');
+     // Ahora puedes procesar el contenido XML como desees
+     const parser = new DOMParser();
+     const xmlDoc = parser.parseFromString(documentXml, 'text/xml');
+     const serializer = new XMLSerializer();
+     const SxmlDoc = serializer.serializeToString(xmlDoc);
+
+     console.log('Resultado XML: \n' + SxmlDoc);
+
+     this.buscaClaves(SxmlDoc);
+  }
+  reader.readAsArrayBuffer(file);
+
+
+
 
     //prueba con file2html
     try {
