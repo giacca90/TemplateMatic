@@ -23,6 +23,7 @@ export class PlantillaComponent implements OnInit {
   file: File;
   nombre: string;
   ruta: string;
+  claves: Array<string> = [];
 
   constructor(private ps: PlantillaService) {
     this.PS = ps;
@@ -46,7 +47,7 @@ export class PlantillaComponent implements OnInit {
   ngOnInit(): void {}
 
   buscaClaves(fileString: string) {
-    let claves: Array<string> = [];
+
     let index: number = 0;
     while (index !== -1) {
       index = fileString.indexOf('{{', index);
@@ -54,17 +55,40 @@ export class PlantillaComponent implements OnInit {
         let indexEnd = fileString.indexOf('}}', index);
         if (indexEnd !== -1) {
           let clave = fileString.substring(index + 2, indexEnd);
-          if (!claves.includes(clave)) {
-            claves.push(clave);
+          clave = clave.replace(/<.*?>/g, '');
+          if (!this.claves.includes(clave)) {
+            this.claves.push(clave);
           }
           index = indexEnd;
         }
       }
     }
-    console.log("Se han encontrado "+claves.length+" claves");
-    for(let clave of claves) {
+    console.log("Se han encontrado "+this.claves.length+" claves");
+    for(let clave of this.claves) {
       console.log(clave);
     }
+  }
+
+  replaceXmlInCopy(originalBlob: Blob, modifiedXml: string, outputPath: string) {
+    const zip = new JSZip();
+  
+    // Lee el contenido del archivo original
+    zip.loadAsync(originalBlob).then((originalZip) => {
+      // Sustituye el contenido XML modificado
+      originalZip.file(outputPath, modifiedXml);
+  
+      // Crea el nuevo archivo
+      originalZip.generateAsync({ type: 'blob' }).then((newBlob) => {
+        // Puedes usar newBlob como prefieras, por ejemplo, guardarlo o descargarlo
+        // Aquí un ejemplo de descarga
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(newBlob);
+        link.download = 'nuevo_archivo.odt'; // Puedes cambiar el nombre según el tipo de archivo
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    });
   }
 
   async EditOdt(file: File) {
@@ -178,6 +202,19 @@ export class PlantillaComponent implements OnInit {
       if (error.code === 'file2html.errors.unsupportedFile') {
         console.error('El formato del archivo no es compatible.');
       }
+    }
+  }
+  creaDocumento() {
+    let parejas: Array<{clave:string, valor:string}> = [];
+    for(let clave of this.claves) {
+      let ele = document.getElementById(clave) as HTMLInputElement;
+      let val = ele.value;
+      let par = {clave: clave, valor: val};
+      parejas.push(par);
+    }
+    console.log("PAREJAS:");  
+    for(let pareja of parejas) {
+      console.log("Clave: "+pareja.clave+" Valor: "+pareja.valor);
     }
   }
 }
