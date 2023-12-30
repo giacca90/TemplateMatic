@@ -25,6 +25,7 @@ export class PlantillaComponent implements OnInit {
   ruta: string;
   claves: Array<string> = [];
   SxmlDoc: string;
+  path:string;
 
   constructor(private ps: PlantillaService) {
     this.PS = ps;
@@ -47,32 +48,6 @@ export class PlantillaComponent implements OnInit {
   }
   ngOnInit(): void {}
 
-  buscaClaves(fileString: string) {
-
-    let index: number = 0;
-    while (index !== -1) {
-      index = fileString.indexOf('{{', index);
-      if (index !== -1) {
-        let indexEnd = fileString.indexOf('}}', index);
-        if (indexEnd !== -1) {
-          let clave = fileString.substring(index + 2, indexEnd);
-          clave = clave.replace(/<.*?>/g, '');
-          if (!this.claves.includes(clave)) {
-            this.claves.push(clave);
-          }
-          index = indexEnd;
-        }
-      }
-    }
-    console.log("Se han encontrado "+this.claves.length+" claves");
-    for(let clave of this.claves) {
-      console.log(clave);
-    }
-  }
-
-
-  
-
   async EditOdt(file: File) {
     console.log('Desde EditOdt');
     //prueba con XML
@@ -84,6 +59,7 @@ export class PlantillaComponent implements OnInit {
 
       // Accede al contenido del archivo content.xml
       const contentXml = await zip.file('content.xml').async('text');
+      this.path = 'content.xml'
 
       // Ahora puedes procesar el contenido XML como desees
       const parser = new DOMParser();
@@ -137,6 +113,7 @@ export class PlantillaComponent implements OnInit {
     const zip = await JSZip().loadAsync(this.file);
     // Accede al contenido del archivo document.xml
     const documentXml = await zip.file('word/document.xml').async('text');
+    this.path = 'word/document.xml';
      // Ahora puedes procesar el contenido XML como desees
      const parser = new DOMParser();
      const xmlDoc = parser.parseFromString(documentXml, 'text/xml');
@@ -186,6 +163,31 @@ export class PlantillaComponent implements OnInit {
       }
     }
   }
+
+  buscaClaves(fileString: string) {
+
+    let index: number = 0;
+    while (index !== -1) {
+      index = fileString.indexOf('{{', index);
+      if (index !== -1) {
+        let indexEnd = fileString.indexOf('}}', index);
+        if (indexEnd !== -1) {
+          let clave = fileString.substring(index + 2, indexEnd);
+          clave = clave.replace(/<.*?>/g, '');
+          if (!this.claves.includes(clave)) {
+            this.claves.push(clave);
+          }
+          index = indexEnd;
+        }
+      }
+    }
+    console.log("Se han encontrado "+this.claves.length+" claves");
+    for(let clave of this.claves) {
+      console.log(clave);
+    }
+  }
+
+
   creaDocumento() {
     let parejas: Array<{clave:string, valor:string}> = [];
     for(let clave of this.claves) {
@@ -222,10 +224,12 @@ export class PlantillaComponent implements OnInit {
         }
       }
     }
+    documento = documento+this.SxmlDoc.substring(indexTemp);
   console.log("DOCUMENTO: \n\n"+ documento);
+  this.replaceXmlInCopy(this.file, documento, this.path)
   }
 
-  replaceXmlInCopy(originalBlob: Blob, modifiedXml: string, outputPath: string) {
+  replaceXmlInCopy(originalBlob: File, modifiedXml: string, outputPath: string) {
     const zip = new JSZip();
   
     // Lee el contenido del archivo original
@@ -239,12 +243,11 @@ export class PlantillaComponent implements OnInit {
         // Aquí un ejemplo de descarga
         const link = document.createElement('a');
         link.href = URL.createObjectURL(newBlob);
-        link.download = 'nuevo_archivo.odt'; // Puedes cambiar el nombre según el tipo de archivo
+        link.download = 'rellenado_'+this.file.name; // Puedes cambiar el nombre según el tipo de archivo
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       });
     });
   }
-
 }
