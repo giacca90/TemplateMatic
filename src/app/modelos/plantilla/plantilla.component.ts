@@ -24,6 +24,7 @@ export class PlantillaComponent implements OnInit {
   nombre: string;
   ruta: string;
   claves: Array<string> = [];
+  SxmlDoc: string;
 
   constructor(private ps: PlantillaService) {
     this.PS = ps;
@@ -69,27 +70,8 @@ export class PlantillaComponent implements OnInit {
     }
   }
 
-  replaceXmlInCopy(originalBlob: Blob, modifiedXml: string, outputPath: string) {
-    const zip = new JSZip();
+
   
-    // Lee el contenido del archivo original
-    zip.loadAsync(originalBlob).then((originalZip) => {
-      // Sustituye el contenido XML modificado
-      originalZip.file(outputPath, modifiedXml);
-  
-      // Crea el nuevo archivo
-      originalZip.generateAsync({ type: 'blob' }).then((newBlob) => {
-        // Puedes usar newBlob como prefieras, por ejemplo, guardarlo o descargarlo
-        // Aquí un ejemplo de descarga
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(newBlob);
-        link.download = 'nuevo_archivo.odt'; // Puedes cambiar el nombre según el tipo de archivo
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      });
-    });
-  }
 
   async EditOdt(file: File) {
     console.log('Desde EditOdt');
@@ -107,11 +89,11 @@ export class PlantillaComponent implements OnInit {
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(contentXml, 'text/xml');
       const serializer = new XMLSerializer();
-      const SxmlDoc = serializer.serializeToString(xmlDoc);
+      this.SxmlDoc = serializer.serializeToString(xmlDoc);
 
-      console.log('Resultado XML: \n' + SxmlDoc);
+      console.log('Resultado XML: \n' + this.SxmlDoc);
 
-      this.buscaClaves(SxmlDoc);
+      this.buscaClaves(this.SxmlDoc);
     };
 
     reader.readAsArrayBuffer(file);
@@ -159,11 +141,11 @@ export class PlantillaComponent implements OnInit {
      const parser = new DOMParser();
      const xmlDoc = parser.parseFromString(documentXml, 'text/xml');
      const serializer = new XMLSerializer();
-     const SxmlDoc = serializer.serializeToString(xmlDoc);
+     this.SxmlDoc = serializer.serializeToString(xmlDoc);
 
-     console.log('Resultado XML: \n' + SxmlDoc);
+     console.log('Resultado XML: \n' + this.SxmlDoc);
 
-     this.buscaClaves(SxmlDoc);
+     this.buscaClaves(this.SxmlDoc);
   }
   reader.readAsArrayBuffer(file);
 
@@ -216,5 +198,53 @@ export class PlantillaComponent implements OnInit {
     for(let pareja of parejas) {
       console.log("Clave: "+pareja.clave+" Valor: "+pareja.valor);
     }
+    
+    let documento: string = ""
+    let index: number = 0;
+    let indexTemp: number = 0;
+    while (index !== -1) {
+      index = this.SxmlDoc.indexOf('{{', index);
+      if (index !== -1) {
+        let indexEnd = this.SxmlDoc.indexOf('}}', index);
+        if (indexEnd !== -1) {
+          let clave = this.SxmlDoc.substring(index + 2, indexEnd);
+          clave = clave.replace(/<.*?>/g, '');
+          let valor = "";
+          parejas.forEach((par) => {
+            if(par.clave === clave) {
+              valor = par.valor
+            }
+          });
+        documento = documento+this.SxmlDoc.substring(indexTemp,index)+valor;
+
+          index = indexEnd;
+          indexTemp = indexEnd + 2;
+        }
+      }
+    }
+  console.log("DOCUMENTO: \n\n"+ documento);
   }
+
+  replaceXmlInCopy(originalBlob: Blob, modifiedXml: string, outputPath: string) {
+    const zip = new JSZip();
+  
+    // Lee el contenido del archivo original
+    zip.loadAsync(originalBlob).then((originalZip) => {
+      // Sustituye el contenido XML modificado
+      originalZip.file(outputPath, modifiedXml);
+  
+      // Crea el nuevo archivo
+      originalZip.generateAsync({ type: 'blob' }).then((newBlob) => {
+        // Puedes usar newBlob como prefieras, por ejemplo, guardarlo o descargarlo
+        // Aquí un ejemplo de descarga
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(newBlob);
+        link.download = 'nuevo_archivo.odt'; // Puedes cambiar el nombre según el tipo de archivo
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    });
+  }
+
 }
