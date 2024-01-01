@@ -13,3 +13,7 @@ h1{
     width: 40%;
     height: 60%;
 }
+
+input {
+    margin-bottom: 5px;
+}

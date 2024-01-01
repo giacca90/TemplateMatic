@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PlantillaService } from '../../services/plantilla.service';
 import * as file2html from 'file2html';
@@ -25,7 +25,7 @@ export class PlantillaComponent implements OnInit {
   ruta: string;
   claves: Array<string> = [];
   SxmlDoc: string;
-  path:string;
+  path: string;
 
   constructor(private ps: PlantillaService) {
     this.PS = ps;
@@ -59,7 +59,7 @@ export class PlantillaComponent implements OnInit {
 
       // Accede al contenido del archivo content.xml
       const contentXml = await zip.file('content.xml').async('text');
-      this.path = 'content.xml'
+      this.path = 'content.xml';
 
       // Ahora puedes procesar el contenido XML como desees
       const parser = new DOMParser();
@@ -105,29 +105,26 @@ export class PlantillaComponent implements OnInit {
 
   async EditDocx(file: File) {
     console.log('Desde EditDocx');
-  //prueba con XML
-  const reader = new FileReader();
+    //prueba con XML
+    const reader = new FileReader();
 
-  reader.onload = async (e: ProgressEvent<FileReader>) => {
-    // Descomprime el archivo .odt
-    const zip = await JSZip().loadAsync(this.file);
-    // Accede al contenido del archivo document.xml
-    const documentXml = await zip.file('word/document.xml').async('text');
-    this.path = 'word/document.xml';
-     // Ahora puedes procesar el contenido XML como desees
-     const parser = new DOMParser();
-     const xmlDoc = parser.parseFromString(documentXml, 'text/xml');
-     const serializer = new XMLSerializer();
-     this.SxmlDoc = serializer.serializeToString(xmlDoc);
+    reader.onload = async (e: ProgressEvent<FileReader>) => {
+      // Descomprime el archivo .odt
+      const zip = await JSZip().loadAsync(this.file);
+      // Accede al contenido del archivo document.xml
+      const documentXml = await zip.file('word/document.xml').async('text');
+      this.path = 'word/document.xml';
+      // Ahora puedes procesar el contenido XML como desees
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(documentXml, 'text/xml');
+      const serializer = new XMLSerializer();
+      this.SxmlDoc = serializer.serializeToString(xmlDoc);
 
-     console.log('Resultado XML: \n' + this.SxmlDoc);
+      console.log('Resultado XML: \n' + this.SxmlDoc);
 
-     this.buscaClaves(this.SxmlDoc);
-  }
-  reader.readAsArrayBuffer(file);
-
-
-
+      this.buscaClaves(this.SxmlDoc);
+    };
+    reader.readAsArrayBuffer(file);
 
     //prueba con file2html
     try {
@@ -165,7 +162,6 @@ export class PlantillaComponent implements OnInit {
   }
 
   buscaClaves(fileString: string) {
-
     let index: number = 0;
     while (index !== -1) {
       index = fileString.indexOf('{{', index);
@@ -181,27 +177,26 @@ export class PlantillaComponent implements OnInit {
         }
       }
     }
-    console.log("Se han encontrado "+this.claves.length+" claves");
-    for(let clave of this.claves) {
+    console.log('Se han encontrado ' + this.claves.length + ' claves');
+    for (let clave of this.claves) {
       console.log(clave);
     }
   }
 
-
   creaDocumento() {
-    let parejas: Array<{clave:string, valor:string}> = [];
-    for(let clave of this.claves) {
+    let parejas: Array<{ clave: string; valor: string }> = [];
+    for (let clave of this.claves) {
       let ele = document.getElementById(clave) as HTMLInputElement;
       let val = ele.value;
-      let par = {clave: clave, valor: val};
+      let par = { clave: clave, valor: val };
       parejas.push(par);
     }
-    console.log("PAREJAS:");  
-    for(let pareja of parejas) {
-      console.log("Clave: "+pareja.clave+" Valor: "+pareja.valor);
+    console.log('PAREJAS:');
+    for (let pareja of parejas) {
+      console.log('Clave: ' + pareja.clave + ' Valor: ' + pareja.valor);
     }
-    
-    let documento: string = ""
+
+    let documento: string = '';
     let index: number = 0;
     let indexTemp: number = 0;
     while (index !== -1) {
@@ -211,39 +206,44 @@ export class PlantillaComponent implements OnInit {
         if (indexEnd !== -1) {
           let clave = this.SxmlDoc.substring(index + 2, indexEnd);
           clave = clave.replace(/<.*?>/g, '');
-          let valor = "";
+          let valor = '';
           parejas.forEach((par) => {
-            if(par.clave === clave) {
-              valor = par.valor
+            if (par.clave === clave) {
+              valor = par.valor;
             }
           });
-        documento = documento+this.SxmlDoc.substring(indexTemp,index)+valor;
+          documento =
+            documento + this.SxmlDoc.substring(indexTemp, index) + valor;
 
           index = indexEnd;
           indexTemp = indexEnd + 2;
         }
       }
     }
-    documento = documento+this.SxmlDoc.substring(indexTemp);
-  console.log("DOCUMENTO: \n\n"+ documento);
-  this.replaceXmlInCopy(this.file, documento, this.path)
+    documento = documento + this.SxmlDoc.substring(indexTemp);
+    console.log('DOCUMENTO: \n\n' + documento);
+    this.replaceXmlInCopy(this.file, documento, this.path);
   }
 
-  replaceXmlInCopy(originalBlob: File, modifiedXml: string, outputPath: string) {
+  replaceXmlInCopy(
+    originalBlob: File,
+    modifiedXml: string,
+    outputPath: string
+  ) {
     const zip = new JSZip();
-  
+
     // Lee el contenido del archivo original
     zip.loadAsync(originalBlob).then((originalZip) => {
       // Sustituye el contenido XML modificado
       originalZip.file(outputPath, modifiedXml);
-  
+
       // Crea el nuevo archivo
       originalZip.generateAsync({ type: 'blob' }).then((newBlob) => {
         // Puedes usar newBlob como prefieras, por ejemplo, guardarlo o descargarlo
         // Aquí un ejemplo de descarga
         const link = document.createElement('a');
         link.href = URL.createObjectURL(newBlob);
-        link.download = 'rellenado_'+this.file.name; // Puedes cambiar el nombre según el tipo de archivo
+        link.download = 'rellenado_' + this.file.name; // Puedes cambiar el nombre según el tipo de archivo
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

@@ -6,7 +6,7 @@
         </div>
         <div class="col" id="form"> 
             @for (clave of this.claves; track clave) {
-                <input type="text" placeholder="{{clave}}" id="{{clave}}">
+                <input type="text" placeholder="{{clave}}" id="{{clave}}" >
                 <br>
             }
             <button type="submit" (click)="creaDocumento()">Crea Documento</button>
