@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PlantillaService } from '../../services/plantilla.service';
+import { ClienteDinamico, ClientesService} from '../../services/clientes.service'
 import * as file2html from 'file2html';
 import OOXMLReader from 'file2html-ooxml';
 import OdtReader from 'file2html-odf';
@@ -19,6 +20,7 @@ file2html.config({
 export class PlantillaComponent implements OnInit {
   route: ActivatedRoute = inject(ActivatedRoute);
   PS: PlantillaService;
+  CS: ClientesService;
   id: number;
   file: File;
   nombre: string;
@@ -27,8 +29,9 @@ export class PlantillaComponent implements OnInit {
   SxmlDoc: string;
   path: string;
 
-  constructor(private ps: PlantillaService) {
+  constructor(private ps: PlantillaService, private cs: ClientesService) {
     this.PS = ps;
+    this.CS = cs;
 
     this.id = this.route.snapshot.queryParams['id'];
     console.log('id: ' + this.id);
@@ -38,12 +41,26 @@ export class PlantillaComponent implements OnInit {
     this.ruta = this.file.webkitRelativePath;
     console.log('ruta: ' + this.ruta);
 
-    if (this.ruta.substring(this.ruta.length - 4).toLowerCase() == '.odt') {
+    if (this.ruta.endsWith('odt')) {
       this.EditOdt(this.file);
-    } else if (
-      this.ruta.substring(this.ruta.length - 4).toLowerCase() == 'docx'
-    ) {
+    } else if ( this.ruta.endsWith('docx')) {
       this.EditDocx(this.file);
+    }
+  }
+
+  completa() {
+    let selector = document.getElementById("opciones") as HTMLSelectElement;
+    const seleccionado = parseInt(selector.value);
+    const cliente: ClienteDinamico = this.CS.getClienteForId(seleccionado);
+    console.log("Cliente obtenido: "+cliente.toString());
+    for(let atributo of cliente.atributos) {
+      for(let clave of this.claves) {
+        if(clave === atributo.clave) {
+          let a = document.getElementById(clave) as HTMLInputElement;
+          a.value = atributo.valor;
+          a.removeAttribute('placeholder');
+        }
+      }
     }
   }
   ngOnInit(): void {}

@@ -15,6 +15,15 @@ export class ClientesService {
   addCliente(cliente:ClienteDinamico) {
     this.clientes.push(cliente);
   }
+
+  getClienteForId(id:number) {
+    for(let cliente of this.clientes) {
+      if(cliente.id === id) {
+        return cliente;
+      }
+    }
+    return null;
+  }
 }
 
 export class Cliente {
@@ -65,6 +74,7 @@ export class ClienteDinamico {
     for(let valor of this.atributos) {
       result = result + valor.clave + ": " + valor.valor + " ";
     }
+    return result;
   }
 
 }
