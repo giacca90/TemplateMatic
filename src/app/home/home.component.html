@@ -15,24 +15,25 @@
 <div id="res">
   <ul>
     @if(plantillas === undefined) {
-      <p>ELIGE UNA CARPETA</p>
-    }
-    @else {
-      @if (plantillas.length === 0) {
-        <p>ESTA CARPETA NO TIENE ARCHIVOS VALIDOS!!!</p>
-      }@else {
-        <br>
-        <input type="text" id="buscador" placeholder="Busca plantilla" (input)="busca()">
-        <br>
-        <br>
-        @for(plantilla of plantillasBuscadas; track plantilla.id){
-          <li>
-              <a routerLink="/plantilla/{{plantilla.id}}" [queryParams]="plantilla">{{ plantilla.id }}: {{plantilla.nombre}}</a>
-          </li>   
-      }
-      }
-    }
-
-    
+    <p>ELIGE UNA CARPETA</p>
+    } @else { @if (plantillas.length === 0) {
+    <p>ESTA CARPETA NO TIENE ARCHIVOS VALIDOS!!!</p>
+    }@else {
+    <br />
+    <input
+      type="text"
+      id="buscador"
+      placeholder="Busca plantilla"
+      (input)="busca()"
+    />
+    <br />
+    <br />
+    @for(plantilla of plantillasBuscadas; track plantilla.id){
+    <li>
+      <a routerLink="/plantilla/{{ plantilla.id }}" [queryParams]="plantilla"
+        >{{ plantilla.id }}: {{ plantilla.nombre }}</a
+      >
+    </li>
+    } } }
   </ul>
 </div>

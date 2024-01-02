@@ -1,7 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PlantillaService } from '../../services/plantilla.service';
-import { ClienteDinamico, ClientesService} from '../../services/clientes.service'
+import { ClienteDinamico, ClientesService} from '../../services/clientes.service';
+import { FormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 import * as file2html from 'file2html';
 import OOXMLReader from 'file2html-ooxml';
 import OdtReader from 'file2html-odf';
@@ -13,7 +15,7 @@ file2html.config({
 @Component({
   selector: 'app-plantilla',
   standalone: true,
-  imports: [],
+  imports: [FormsModule, NgSelectModule],
   templateUrl: './plantilla.component.html',
   styleUrl: './plantilla.component.css',
 })
@@ -28,6 +30,7 @@ export class PlantillaComponent implements OnInit {
   claves: Array<string> = [];
   SxmlDoc: string;
   path: string;
+  selected: string;
 
   constructor(private ps: PlantillaService, private cs: ClientesService) {
     this.PS = ps;
@@ -50,18 +53,21 @@ export class PlantillaComponent implements OnInit {
 
   completa() {
     let selector = document.getElementById("opciones") as HTMLSelectElement;
-    const seleccionado = parseInt(selector.value);
-    const cliente: ClienteDinamico = this.CS.getClienteForId(seleccionado);
-    console.log("Cliente obtenido: "+cliente.toString());
-    for(let atributo of cliente.atributos) {
-      for(let clave of this.claves) {
-        if(clave === atributo.clave) {
-          let a = document.getElementById(clave) as HTMLInputElement;
-          a.value = atributo.valor;
-          a.removeAttribute('placeholder');
+    if(this.selected) {
+      const seleccionado = parseInt(this.selected);
+      const cliente: ClienteDinamico = this.CS.getClienteForId(seleccionado);
+      console.log("Cliente obtenido: "+cliente.toString());
+      for(let atributo of cliente.atributos) {
+        for(let clave of this.claves) {
+          if(clave === atributo.clave) {
+            let a = document.getElementById(clave) as HTMLInputElement;
+            a.value = atributo.valor;
+            a.removeAttribute('placeholder');
+          }
         }
       }
     }
+    
   }
   ngOnInit(): void {}
 

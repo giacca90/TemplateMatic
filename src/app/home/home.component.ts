@@ -49,11 +49,19 @@ export class HomeComponent implements OnInit {
   }
 
   busca() {
-    let buscador: HTMLInputElement = document.getElementById('buscador') as HTMLInputElement;
-    console.log('DETECTADOS CAMBIOS EN EL BUSCADOR \n Valor: '+buscador.value);
+    let buscador: HTMLInputElement = document.getElementById(
+      'buscador'
+    ) as HTMLInputElement;
+    console.log(
+      'DETECTADOS CAMBIOS EN EL BUSCADOR \n Valor: ' + buscador.value
+    );
     this.plantillasBuscadas = [];
-    for(let plantilla of this.plantillas) {
-      if(plantilla.nombre.toLocaleLowerCase().includes(buscador.value.toLocaleLowerCase())) {
+    for (let plantilla of this.plantillas) {
+      if (
+        plantilla.nombre
+          .toLocaleLowerCase()
+          .includes(buscador.value.toLocaleLowerCase())
+      ) {
         this.plantillasBuscadas.push(plantilla);
       }
     }
