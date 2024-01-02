@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Cliente, ClientesService, ClienteDinamico } from '../services/clientes.service';
 
 @Component({
@@ -8,13 +8,16 @@ import { Cliente, ClientesService, ClienteDinamico } from '../services/clientes.
   templateUrl: './agregar.component.html',
   styleUrl: './agregar.component.css',
 })
-export class AgregarComponent {
+export class AgregarComponent implements OnInit{
   CSV: File;
   //clientes:Cliente[] = this.CS.clientes;
   clientes:ClienteDinamico[] = [];
 
   constructor(private CS: ClientesService) {
 
+  }
+  ngOnInit(): void {
+    this.clientes = this.CS.clientes;
   }
   cargaCSV() {
     let input = <HTMLInputElement>document.getElementById('CSV');

@@ -30,8 +30,7 @@ export class HomeComponent implements OnInit{
            this.plantillas = [];  
       if (input.files) {
         for (let i = 0; i < input.files.length; i++) {
-          if(input.files[0].name.substring(input.files[0].name.length-4)==".odt" || input.files[0].name.substring(input.files[0].name.length-4)=="docx"){
-            
+          if(input.files[i].name.endsWith('odt') || input.files[i].name.endsWith('docx')){
             this.plantillas.push(new Plantilla(i+1, input.files[i]));
           }
         }
