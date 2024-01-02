@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Cliente, ClientesService } from '../services/clientes.service';
+import { Cliente, ClientesService, ClienteDinamico } from '../services/clientes.service';
 
 @Component({
   selector: 'app-agregar',
@@ -10,7 +10,8 @@ import { Cliente, ClientesService } from '../services/clientes.service';
 })
 export class AgregarComponent {
   CSV: File;
-  clientes:Cliente[] = this.CS.clientes;
+  //clientes:Cliente[] = this.CS.clientes;
+  clientes:ClienteDinamico[] = [];
 
   constructor(private CS: ClientesService) {
 
@@ -20,13 +21,28 @@ export class AgregarComponent {
     this.CSV = input.files[0];
     let reader = new FileReader();
     reader.readAsText(this.CSV);
-//    reader.readAsArrayBuffer(this.CSV);
     reader.onload = () => {
-      let CSVString = reader.result.toString();
+      let CSVString:string = reader.result.toString();
       console.log("CSVString: "+CSVString);
-      let rows = CSVString.split('\n');
-      let count = 0;
-      rows.forEach((row) => {
+      let rows:string[] = CSVString.split('\n');
+//      let count = 0;
+      let atributos:string[];
+      for(let i=0; i<rows.length; i++) {
+        let cliente: ClienteDinamico;
+        console.log("row "+i+": "+ rows[i]);
+        let val = rows[i].split(',');
+        if(i===0) {
+          atributos = val;
+        }else{
+          cliente = new ClienteDinamico(atributos);
+          cliente.addValores(val, i);
+          this.CS.clientes.push(cliente);
+        } 
+      }
+      this.clientes = this.CS.clientes;
+
+      /* Versión con Cliente */
+      /* rows.forEach((row) => {
         console.log("raw: "+row)
         let val = row.split(',');
         console.log("val[0]: "+val[0]);
@@ -42,8 +58,8 @@ export class AgregarComponent {
         );
         count++;
         this.CS.addCliente(cliente);
-      });
-      this.clientes = this.CS.clientes;
+      }); */
+    //  this.clientes = this.CS.clientes;
     };
   }
 }

@@ -2,7 +2,31 @@
 <h3>Carga un CSV valido</h3>
 <input type="file" (change)="cargaCSV()" id="CSV" accept=".csv">
 <div>
-   @if(clientes.length > 0) {
+    @if(clientes.length > 0) {
+        <table>
+        <thead>
+            <tr>
+                @for(atributo of clientes[0].atributos; track atributo) {
+                    <th>{{atributo.clave}}</th>
+                }
+            </tr>
+        </thead>
+        
+            @for(cliente of clientes; track cliente) {
+                <tbody>
+                    @for(valor of cliente.atributos; track valor) {
+                        <td>{{valor.valor}}</td>
+                    }
+                </tbody>
+            }
+        </table>
+    }@else {
+        <p>no hay clientes</p>
+       }
+
+
+    <!-- Versión con Cliente -->
+   <!-- @if(clientes.length > 0) {
         <table>
             @for(cliente of this.clientes; track cliente.id) {
                 @if(cliente.id === 0) {
@@ -33,5 +57,5 @@
         
    }@else {
     <p>no hay clientes</p>
-   }
+   } -->
 </div>
