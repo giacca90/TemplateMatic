@@ -14,9 +14,9 @@
 />
 <div id="res">
   <ul>
-    @if(plantillas === undefined) {
+    @if(PS.getTemp() === undefined) {
     <p>ELIGE UNA CARPETA</p>
-    } @else { @if (plantillas.length === 0) {
+    } @else { @if (PS.getTemp().length === 0) {
     <p>ESTA CARPETA NO TIENE ARCHIVOS VALIDOS!!!</p>
     }@else {
     <br />

@@ -11,40 +11,32 @@ import { PlantillaService, Plantilla } from '../services/plantilla.service';
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
-  public plantillas: Array<Plantilla>;
   public plantillasBuscadas: Array<Plantilla> = [];
-  public ps: PlantillaService;
 
-  constructor(PS: PlantillaService) {
-    this.ps = PS;
-  }
+  constructor(public PS: PlantillaService) {  }
 
   ngOnInit(): void {
-    if (this.ps.getTemp()) {
-      this.plantillas = this.ps.getTemp();
-      this.plantillasBuscadas = this.plantillas;
+    if (this.PS.getTemp()) {
+      this.plantillasBuscadas = this.PS.getTemp();
     }
     let input: HTMLInputElement | null = <HTMLInputElement | null>(
       document.getElementById('input')
     );
-    input.addEventListener('change', (ev: any) => {
-      console.log('RUTA: ' + input?.value);
-      this.ps.setTemp([]);
-      this.plantillas = [];
+    input.addEventListener('change', () => {
+      this.PS.setTemp([]);
       if (input.files) {
+        let plantillas:Plantilla[] = [];
         for (let i = 0; i < input.files.length; i++) {
           if (
             input.files[i].name.endsWith('odt') ||
             input.files[i].name.endsWith('docx')
           ) {
-            this.plantillas.push(new Plantilla(i + 1, input.files[i]));
+            plantillas.push(new Plantilla(i + 1, input.files[i]));
           }
         }
-        this.ps.setTemp(this.plantillas);
-        this.plantillasBuscadas = this.plantillas;
+        this.PS.setTemp(plantillas);
+        this.plantillasBuscadas = plantillas;
       }
-
-      console.log('maxiprueba: ' + this.ps.getTemp().toString());
     });
   }
 
@@ -56,7 +48,7 @@ export class HomeComponent implements OnInit {
       'DETECTADOS CAMBIOS EN EL BUSCADOR \n Valor: ' + buscador.value
     );
     this.plantillasBuscadas = [];
-    for (let plantilla of this.plantillas) {
+    for (let plantilla of this.PS.getTemp()) {
       if (
         plantilla.nombre
           .toLocaleLowerCase()
