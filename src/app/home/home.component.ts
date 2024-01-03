@@ -44,9 +44,6 @@ export class HomeComponent implements OnInit {
     let buscador: HTMLInputElement = document.getElementById(
       'buscador'
     ) as HTMLInputElement;
-    console.log(
-      'DETECTADOS CAMBIOS EN EL BUSCADOR \n Valor: ' + buscador.value
-    );
     this.plantillasBuscadas = [];
     for (let plantilla of this.PS.getTemp()) {
       if (

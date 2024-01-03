@@ -26,13 +26,13 @@ export class AgregarComponent implements OnInit{
     reader.readAsText(this.CSV);
     reader.onload = () => {
       let CSVString:string = reader.result.toString();
-      console.log("CSVString: "+CSVString);
+//      console.log("CSVString: "+CSVString);
       let rows:string[] = CSVString.split('\n');
 //      let count = 0;
       let atributos:string[];
       for(let i=0; i<rows.length; i++) {
         let cliente: ClienteDinamico;
-        console.log("row "+i+": "+ rows[i]);
+//        console.log("row "+i+": "+ rows[i]);
         let val = rows[i].split(',');
         if(i===0) {
           atributos = val;

@@ -21,8 +21,6 @@ file2html.config({
 })
 export class PlantillaComponent implements OnInit {
   route: ActivatedRoute = inject(ActivatedRoute);
-  PS: PlantillaService;
-  CS: ClientesService;
   id: number;
   file: File;
   nombre: string;
@@ -32,13 +30,11 @@ export class PlantillaComponent implements OnInit {
   path: string;
   selected: string;
 
-  constructor(private ps: PlantillaService, private cs: ClientesService) {
-    this.PS = ps;
-    this.CS = cs;
-
+  constructor(public PS: PlantillaService, public CS: ClientesService) {
+    
     this.id = this.route.snapshot.queryParams['id'];
     console.log('id: ' + this.id);
-    this.file = this.ps.getPlantillaForId(this.id);
+    this.file = PS.getPlantillaForId(this.id);
     this.nombre = this.file.name;
     console.log('nombre: ' + this.nombre);
     this.ruta = this.file.webkitRelativePath;
@@ -89,7 +85,7 @@ export class PlantillaComponent implements OnInit {
       const serializer = new XMLSerializer();
       this.SxmlDoc = serializer.serializeToString(xmlDoc);
 
-      console.log('Resultado XML: \n' + this.SxmlDoc);
+//      console.log('Resultado XML: \n' + this.SxmlDoc);
 
       this.buscaClaves(this.SxmlDoc);
     };
@@ -113,7 +109,7 @@ export class PlantillaComponent implements OnInit {
       // Concatena estilos y contenido
       const html = styles + fileContent;
 
-      console.log('RESULTADO: \n' + html);
+//      console.log('RESULTADO: \n' + html);
       let view = document.getElementById('contentContainer');
       view.innerHTML = html;
     } catch (error) {
@@ -144,7 +140,7 @@ export class PlantillaComponent implements OnInit {
       const serializer = new XMLSerializer();
       this.SxmlDoc = serializer.serializeToString(xmlDoc);
 
-      console.log('Resultado XML: \n' + this.SxmlDoc);
+//      console.log('Resultado XML: \n' + this.SxmlDoc);
 
       this.buscaClaves(this.SxmlDoc);
     };
@@ -170,7 +166,7 @@ export class PlantillaComponent implements OnInit {
       // Concatena estilos y contenido
       const html = styles + fileContent;
 
-      console.log('RESULTADO: \n' + html);
+//      console.log('RESULTADO: \n' + html);
 
       let view = document.getElementById('contentContainer');
       view.innerHTML = html;
@@ -245,7 +241,7 @@ export class PlantillaComponent implements OnInit {
       }
     }
     documento = documento + this.SxmlDoc.substring(indexTemp);
-    console.log('DOCUMENTO: \n\n' + documento);
+//    console.log('DOCUMENTO: \n\n' + documento);
     this.replaceXmlInCopy(this.file, documento, this.path);
   }
 
