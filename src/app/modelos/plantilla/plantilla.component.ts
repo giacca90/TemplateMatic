@@ -52,7 +52,6 @@ export class PlantillaComponent implements OnInit {
   }
 
   completa() {
-    let selector = document.getElementById("opciones") as HTMLSelectElement;
     if(this.selected) {
       const seleccionado = parseInt(this.selected);
       const cliente: ClienteDinamico = this.CS.getClienteForId(seleccionado);
@@ -115,6 +114,8 @@ export class PlantillaComponent implements OnInit {
       const html = styles + fileContent;
 
       console.log('RESULTADO: \n' + html);
+      let view = document.getElementById('contentContainer');
+      view.innerHTML = html;
     } catch (error) {
       // Maneja cualquier error que pueda ocurrir durante el proceso
       console.error('Error:', error);
@@ -171,7 +172,7 @@ export class PlantillaComponent implements OnInit {
 
       console.log('RESULTADO: \n' + html);
 
-      let view = document.getElementById('view');
+      let view = document.getElementById('contentContainer');
       view.innerHTML = html;
     } catch (error) {
       // Maneja cualquier error que pueda ocurrir durante el proceso

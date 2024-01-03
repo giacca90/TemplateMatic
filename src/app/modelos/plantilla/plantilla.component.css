@@ -7,6 +7,12 @@ h1{
     width: 100%;
     aspect-ratio: 1 / 1.4142;  /* proporción ISO-216 del papel A4 */
     border: 1px solid black; 
+    position: relative;
+}
+
+#contentContainer {
+    overflow-y: auto; /* Añade overflow-y: auto; para permitir el scroll vertical */
+    max-height: 100%; /* Ajusta según sea necesario */
 }
 
 #form {
