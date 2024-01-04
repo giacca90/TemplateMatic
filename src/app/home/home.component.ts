@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterContentInit, Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PlantillaComponent } from '../modelos/plantilla/plantilla.component';
 import { PlantillaService, Plantilla } from '../services/plantilla.service';
@@ -16,12 +16,8 @@ export class HomeComponent implements OnInit {
   constructor(public PS: PlantillaService) {  }
 
   ngOnInit(): void {
-    if (this.PS.getTemp()) {
-      this.plantillasBuscadas = this.PS.getTemp();
-    }
-    let input: HTMLInputElement | null = <HTMLInputElement | null>(
-      document.getElementById('input')
-    );
+    this.plantillasBuscadas = this.PS.getTemp();
+    let input = document.getElementById('input') as HTMLInputElement;
     input.addEventListener('change', () => {
       this.PS.setTemp([]);
       if (input.files) {
