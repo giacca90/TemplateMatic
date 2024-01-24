@@ -16,10 +16,45 @@ h1{
 }
 
 #form {
-    width: 40%;
-    height: 60%;
+  width: 40%;
+  height: 60%;
+  text-align: left;
+  margin-left: 10px;
+}
+
+.campoVacio{
+  border: 2px solid red;
+}
+
+.campoValido{
+  border: 2px solid green;
+}
+
+.checkbox {
+  margin-left: 5px;
 }
 
 input {
     margin-bottom: 5px;
 }
+
+.progress-container {
+    width: 100%;
+    height: 20px;
+    margin: auto;
+    margin-top: 10px;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    background-color: #4caf50;
+    transition: width 0.5s;
+  }
+
+  .creaDocumento {
+    margin-top: 6px;
+  }
+
+  .gifCarga {
+    margin-top: 50px;
+  }

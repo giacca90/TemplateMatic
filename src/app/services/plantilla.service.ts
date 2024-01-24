@@ -4,10 +4,10 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class PlantillaService {
-  private plantillas: Array<Plantilla>;
+  private plantillas: Plantilla[];
   constructor() {}
 
-  setTemp(_plantillas: Array<Plantilla>) {
+  setTemp(_plantillas: Plantilla[]) {
     this.plantillas = _plantillas;
   }
 
@@ -15,10 +15,10 @@ export class PlantillaService {
     return this.plantillas;
   }
 
-  getPlantillaForId(id: number): File {
+  getPlantillaForId(id: number): Plantilla {
     for (let i = 0; i < this.plantillas.length; i++) {
       if (this.plantillas[i].id == id) {
-        return this.plantillas[i].file;
+        return this.plantillas[i];
       }
     }
     return null;
@@ -31,11 +31,16 @@ export class Plantilla {
   nombre: string;
   address: string;
 
-  constructor(_id: number, _file: File) {
+  constructor(_id: number, _file: File, _nombre?: string, _address?: string) {
     this.id = _id;
     this.file = _file;
-    this.nombre = _file.name;
-    this.address = _file.webkitRelativePath;
+    if(_file !== null) {
+      this.nombre = _file.name;
+      this.address = _file.webkitRelativePath;
+    }else{
+      this.nombre = _nombre;
+      this.address = _address;
+    }
   }
 
   toString() {
